@@ -24,3 +24,14 @@ class IncorrectParametersException(Exception):
         message = "Incorrect parameters sent: "
         message += ', '.join(self.params)
         return message
+
+
+class MissingParametersException(Exception):
+
+    def __init__(self, *params):
+        self.params = params
+
+    def __str__(self):
+        parameters = ', '.join(self.params)
+        message = "Missing parameters sent: %s" % parameters
+        return message
