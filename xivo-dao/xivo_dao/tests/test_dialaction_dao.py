@@ -34,6 +34,8 @@ class TestDialactionDAO(DAOTestCase):
         dialaction.category = 'user'
         dialaction.categoryval = '1'
         dialaction.event = 'answer'
+        dialaction.actionarg1 = None
+        dialaction.actionarg2 = None
 
         dialaction_dao.add(dialaction)
 
