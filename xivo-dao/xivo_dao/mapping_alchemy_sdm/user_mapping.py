@@ -51,11 +51,13 @@ class UserMapping(AbstractMapping):
                               'outcallerid': 'default',
                               'enableclient': 0,
                               'ringintern': '',
+                              'timezone': '',
                               'ringextern': '',
                               'ringgroup': '',
                               'ringforward': '',
                               'rightcallcode': '',
-                              'description': ''
+                              'description': '',
+                              'enablexfer': 1,
                             }
 
     alchemy_types = {
