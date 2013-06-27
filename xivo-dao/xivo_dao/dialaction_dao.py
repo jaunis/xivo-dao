@@ -46,6 +46,26 @@ def delete_by_userid(session, userid):
         raise
 
 
+@daosession
+def add_dialaction_for_user(session, userid, event, action='none'):
+    session.begin()
+    dialaction = Dialaction(
+        event=event,
+        category='user',
+        categoryval=userid,
+        action=action,
+        actionarg1=None,
+        actionarg2=None,
+        linked=1)
+
+    try:
+        session.add(dialaction)
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
+
+
 def _request_by_userid(session, userid):
     return (session.query(Dialaction).filter(Dialaction.category == 'user')
                                      .filter(Dialaction.categoryval == str(userid)))

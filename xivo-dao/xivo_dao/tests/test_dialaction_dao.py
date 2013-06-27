@@ -64,3 +64,19 @@ class TestDialactionDAO(DAOTestCase):
         result = self.session.query(Dialaction).all()
         self.assertEquals(len(result), 1)
         self.assertEquals(result[0].categoryval, '2')
+
+    def test_add_dialaction_for_user(self):
+        user_id = '1'
+        event = 'noanswer'
+
+        dialaction_dao.add_dialaction_for_user(user_id, event)
+
+        dialaction = self.session.query(Dialaction).filter(Dialaction.categoryval == user_id).first()
+
+        self.assertEquals(dialaction.event, 'noanswer')
+        self.assertEquals(dialaction.category, 'user')
+        self.assertEquals(dialaction.categoryval, '1')
+        self.assertEquals(dialaction.action, 'none')
+        self.assertEquals(dialaction.actionarg1, None)
+        self.assertEquals(dialaction.actionarg2, None)
+        self.assertEquals(dialaction.linked, 1)
