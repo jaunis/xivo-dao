@@ -68,9 +68,9 @@ class Dialaction(Base):
                          'application:password',
                          'sound',
                          'custom',
-                          name='dialaction_action',
-                          metadata=Type.metadata),
-                   nullable=False)
+                         name='dialaction_action',
+                         metadata=Type.metadata),
+                    nullable=False)
     actionarg1 = Column(String(255))
     actionarg2 = Column(String(255))
     linked = Column(Integer, nullable=False, default=0)
