@@ -1087,3 +1087,35 @@ class TestUserFeaturesDAO(DAOTestCase):
         self.assertEqual(user2.firstname, user2_firstname)
         self.assertEqual(line1.id, user1_line_id)
         self.assertEqual(line2.id, user2_line_id)
+
+    def test_find_all_by_firstname_no_users(self):
+        users = user_dao.find_all_by_firstname('lord')
+
+        self.assertEqual(len(users), 0)
+
+    def test_find_all_by_firstname_one_user(self):
+        firstname = 'lord'
+        self._add_user(firstname)
+
+        users = user_dao.find_all_by_firstname('lord')
+
+        self.assertEqual(len(users), 1)
+
+        user1_firstname = users[0].firstname
+
+        self.assertEquals(user1_firstname, firstname)
+
+    def test_find_all_by_firstname_two_users(self):
+        firstname = 'lord'
+        self._add_user(firstname)
+        self._add_user(firstname)
+
+        users = user_dao.find_all_by_firstname('lord')
+
+        self.assertEqual(len(users), 2)
+
+        user1_firstname = users[0].firstname
+        user2_firstname = users[1].firstname
+
+        self.assertEquals(user1_firstname, firstname)
+        self.assertEquals(user2_firstname, firstname)

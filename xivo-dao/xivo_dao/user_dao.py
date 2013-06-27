@@ -82,6 +82,14 @@ def disable_recording(user_id):
 
 
 @daosession
+def find_all_by_firstname(session, firstname):
+    return (session
+            .query(UserFeatures)
+            .filter(UserFeatures.firstname == firstname)
+            .all())
+
+
+@daosession
 def update(session, user_id, user_data_dict):
     session.begin()
     result = session.query(UserFeatures).filter(UserFeatures.id == user_id).update(user_data_dict)
