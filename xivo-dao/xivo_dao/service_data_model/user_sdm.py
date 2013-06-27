@@ -16,7 +16,6 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 from xivo_dao.service_data_model.base_sdm import BaseSdm
-from xivo_dao.service_data_model.sdm_exception import MissingParametersException
 
 
 class UserSdm(BaseSdm):
@@ -24,37 +23,4 @@ class UserSdm(BaseSdm):
     REQUIRED_PARAMETERS = ['firstname']
 
     def __init__(self):
-        self.id = None
-        self.firstname = ""
-        self.lastname = ""
-        self.callerid = ""
-        self.username = ""
-        self.password = ""
-        self.enableclient = False
-        self.musiconhold = ""
-        self.outcallerid = ""
-        self.mobilephonenumber = ""
-
-        # field to be used for user specific purposes like billing
-        self.userfield = ""
-        self.timezone = ""
-        self.language = ""
-        self.description = ""
-        self.ctiprofileid = None
-        self.voicemailid = None
-        self.agentid = None
-        self.entityid = None
-        self.line = None
-
-    def validate(self, parameters):
-        BaseSdm.validate(self, parameters)
-
-        missing = []
-        for param_name in self.REQUIRED_PARAMETERS:
-            if param_name not in parameters:
-                missing.append(param_name)
-
-        if len(missing) > 0:
-            raise MissingParametersException(*missing)
-
-        return True
+        pass
