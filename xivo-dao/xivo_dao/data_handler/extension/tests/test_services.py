@@ -47,9 +47,7 @@ class TestExtension(unittest.TestCase):
         context = 'toto'
 
         extension = Extension(exten=exten,
-                              context=context,
-                              type='user',
-                              typeval='0')
+                              context=context)
 
         self.assertRaises(InvalidParametersError, extension_services.create, extension)
         self.assertEquals(extension_notifier_created.call_count, 0)
@@ -61,9 +59,7 @@ class TestExtension(unittest.TestCase):
         context = ''
 
         extension = Extension(exten=exten,
-                              context=context,
-                              type='user',
-                              typeval='0')
+                              context=context)
 
         self.assertRaises(InvalidParametersError, extension_services.create, extension)
         self.assertEquals(extension_notifier_created.call_count, 0)
@@ -77,9 +73,7 @@ class TestExtension(unittest.TestCase):
 
         extension = Extension(exten=exten,
                               context=context,
-                              commented=commented,
-                              type='user',
-                              typeval='0')
+                              commented=commented)
 
         self.assertRaises(InvalidParametersError, extension_services.create, extension)
 
@@ -93,9 +87,7 @@ class TestExtension(unittest.TestCase):
         context = 'toto'
 
         extension = Extension(exten=exten,
-                              context=context,
-                              type='user',
-                              typeval='0')
+                              context=context)
 
         extension_dao_create.return_value = extension
 
@@ -115,9 +107,7 @@ class TestExtension(unittest.TestCase):
         context = 'toto'
 
         extension = Extension(exten=exten,
-                              context=context,
-                              type='user',
-                              typeval='0')
+                              context=context)
 
         find_by_exten_context.return_value = extension
 
@@ -135,9 +125,7 @@ class TestExtension(unittest.TestCase):
         context = 'toto'
 
         extension = Extension(exten=exten,
-                              context=context,
-                              type='user',
-                              typeval='0')
+                              context=context)
 
         find_by_exten_context.return_value = None
         find_context_by_name.return_value = None
@@ -159,9 +147,7 @@ class TestExtension(unittest.TestCase):
         context = Context(name=context_name)
 
         extension = Extension(exten=exten,
-                              context=context_name,
-                              type='user',
-                              typeval='0')
+                              context=context_name)
 
         is_extension_inside_range.return_value = False
         find_context_by_name.return_value = context
@@ -180,9 +166,7 @@ class TestExtension(unittest.TestCase):
         context = 'toto'
 
         extension = Extension(exten=exten,
-                              context=context,
-                              type='user',
-                              typeval='0')
+                              context=context)
 
         error = Exception("message")
         extension_dao_create.side_effect = ElementCreationError(error, '')
@@ -197,9 +181,7 @@ class TestExtension(unittest.TestCase):
         context = 'toto'
         extension = Extension(id=1,
                               exten=exten,
-                              context=context,
-                              type='user',
-                              typeval='0')
+                              context=context)
 
         extension_services.delete(extension)
 

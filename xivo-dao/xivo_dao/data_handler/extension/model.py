@@ -15,52 +15,63 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-from xivo_dao.helpers.abstract_model import AbstractModels
 from xivo_dao.alchemy.extension import Extension as ExtensionSchema
+from xivo_dao.converters.database_converter import DatabaseConverter
+from xivo_dao.helpers.new_model import NewModel
 
 
-class Extension(AbstractModels):
+DB_TO_MODEL_MAPPING = {
+    'id': 'id',
+    'exten': 'exten',
+    'context': 'context',
+    'commented': 'commented'
+}
+
+
+class Extension(NewModel):
 
     MANDATORY = [
         'exten',
         'context',
-        'type',
-        'typeval'
     ]
 
-    # mapping = {db_field: model_field}
-    _MAPPING = {
-        'id': 'id',
-        'exten': 'exten',
-        'context': 'context',
-        'type': 'type',
-        'typeval': 'typeval',
-        'commented': 'commented'
-    }
+    FIELDS = [
+        'id',
+        'exten',
+        'context',
+        'commented',
+    ]
 
     _RELATION = {}
 
     def __init__(self, *args, **kwargs):
-        AbstractModels.__init__(self, *args, **kwargs)
+        NewModel.__init__(self, *args, **kwargs)
+        if self.commented is None:
+            self.commented = False
 
-    @classmethod
-    def from_data_source(cls, db_object):
-        obj = super(Extension, cls).from_data_source(db_object)
-        if hasattr(obj, 'commented') and isinstance(obj.commented, int):
-            obj.commented = bool(obj.commented)
-        return obj
 
-    def to_data_source(self, class_schema):
-        if hasattr(self, 'commented') and isinstance(self.commented, bool):
-            self.commented = int(self.commented)
-        return AbstractModels.to_data_source(self, class_schema)
+class ExtensionDBConverter(DatabaseConverter):
+    def __init__(self):
+        DatabaseConverter.__init__(self, DB_TO_MODEL_MAPPING, ExtensionSchema, Extension)
 
-    def to_data_dict(self):
-        if hasattr(self, 'commented') and isinstance(self.commented, bool):
-            self.commented = int(self.commented)
-        return AbstractModels.to_data_dict(self)
+    def to_model(self, db_row):
+        model = DatabaseConverter.to_model(self, db_row)
+        if hasattr(model, 'commented') and isinstance(model.commented, int):
+            model.commented = bool(model.commented)
+        return model
+
+    def to_source(self, model):
+        if hasattr(model, 'commented') and isinstance(model.commented, bool):
+            model.commented = int(model.commented)
+        source = DatabaseConverter.to_source(self, model)
+        source.type = 'user'
+        source.typeval = '0'
+        return source
 
 
 class ExtensionOrdering(object):
     exten = ExtensionSchema.exten
     context = ExtensionSchema.context
+
+
+db_converter = ExtensionDBConverter()

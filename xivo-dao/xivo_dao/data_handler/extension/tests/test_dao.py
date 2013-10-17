@@ -167,28 +167,6 @@ class TestExtensionDao(DAOTestCase):
         assert_that(extension.exten, equal_to(exten))
         assert_that(extension.context, equal_to(context))
 
-    def test_test_get_by_type_typeval_no_exist(self):
-        self.assertRaises(LookupError, extension_dao.get_by_type_typeval, 'user', '1')
-
-    def test_get_by_type_typeval(self):
-        exten = 'sdklfj'
-        context = 'toto'
-        type = 'user'
-        typeval = '2'
-
-        expected_extension = self.add_extension(exten=exten,
-                                                context=context,
-                                                type=type,
-                                                typeval=typeval)
-
-        extension = extension_dao.get_by_type_typeval(type, typeval)
-
-        assert_that(extension.id, equal_to(expected_extension.id))
-        assert_that(extension.exten, equal_to(exten))
-        assert_that(extension.context, equal_to(context))
-        assert_that(extension.type, equal_to(type))
-        assert_that(extension.typeval, equal_to(typeval))
-
     def test_find_by_exten_context_no_extensions(self):
         expected = None
         result = extension_dao.find_by_exten_context('1000', 'default')
@@ -198,46 +176,39 @@ class TestExtensionDao(DAOTestCase):
     def test_find_by_exten_context_one_extension(self):
         exten = 'sdklfj'
         context = 'toto'
-        type = 'user'
-        typeval = '2'
 
         extension_row = self.add_extension(exten=exten,
-                                           context=context,
-                                           type=type,
-                                           typeval=typeval)
+                                           context=context)
 
         result = extension_dao.find_by_exten_context(exten, context)
 
         assert_that(result, all_of(
             has_property('id', extension_row.id),
             has_property('exten', exten),
-            has_property('context', context),
-            has_property('type', type),
-            has_property('typeval', typeval)
+            has_property('context', context)
         ))
 
     def test_create(self):
         exten = 'extension'
         context = 'toto'
-        type = 'user'
-        typeval = '4'
         commented = True
+
+        default_type = 'user'
+        default_typeval = '0'
 
         extension = Extension(exten=exten,
                               context=context,
-                              type=type,
-                              typeval=typeval,
                               commented=commented)
 
         created_extension = extension_dao.create(extension)
 
-        row = self.session.query(ExtensionSchema).filter(ExtensionSchema.id == created_extension.id).first()
+        row = self.session.query(ExtensionSchema).get(created_extension.id)
 
         assert_that(row.id, equal_to(created_extension.id))
         assert_that(row.exten, equal_to(exten))
         assert_that(row.context, equal_to(context))
-        assert_that(row.type, equal_to(type))
-        assert_that(row.typeval, equal_to(typeval))
+        assert_that(row.type, equal_to(default_type))
+        assert_that(row.typeval, equal_to(default_typeval))
         assert_that(row.commented, equal_to(1))
 
     def test_create_same_exten_and_context(self):
@@ -245,14 +216,12 @@ class TestExtensionDao(DAOTestCase):
         context = 'toto'
 
         extension = Extension(exten=exten,
-                              context=context,
-                              type='user')
+                              context=context)
 
         extension_dao.create(extension)
 
         extension = Extension(exten=exten,
-                              context=context,
-                              type='user')
+                              context=context)
 
         self.assertRaises(ElementCreationError, extension_dao.create, extension)
 
@@ -266,8 +235,7 @@ class TestExtensionDao(DAOTestCase):
         context = 'toto'
 
         extension = Extension(exten=exten,
-                              context=context,
-                              type='user')
+                              context=context)
 
         self.assertRaises(ElementCreationError, extension_dao.create, extension)
         session.begin.assert_called_once_with()
@@ -276,13 +244,9 @@ class TestExtensionDao(DAOTestCase):
     def test_delete(self):
         exten = 'sdklfj'
         context = 'toto'
-        type = 'user'
-        typeval = '2'
 
         expected_extension = self.add_extension(exten=exten,
-                                                context=context,
-                                                type=type,
-                                                typeval=typeval)
+                                                context=context)
 
         extension = extension_dao.get(expected_extension.id)
 

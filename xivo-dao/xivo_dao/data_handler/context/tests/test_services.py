@@ -127,8 +127,7 @@ class TestContext(unittest.TestCase):
         context_name = 'default'
 
         extension = Extension(exten='1000',
-                              context=context_name,
-                              type='user')
+                              context=context_name)
 
         context_ranges.return_value = []
 
@@ -142,8 +141,7 @@ class TestContext(unittest.TestCase):
         expected = False
 
         extension = Extension(exten='1000',
-                              context='default',
-                              type='user')
+                              context='default')
 
         expected_ranges = [(2000, 3000)]
         context_ranges.return_value = expected_ranges
@@ -157,8 +155,7 @@ class TestContext(unittest.TestCase):
         expected = True
 
         extension = Extension(exten='1000',
-                              context='default',
-                              type='user')
+                              context='default')
 
         expected_ranges = [(1000, 3000)]
         context_ranges.return_value = expected_ranges
@@ -172,8 +169,7 @@ class TestContext(unittest.TestCase):
         expected = True
 
         extension = Extension(exten='2000',
-                              context='default',
-                              type='user')
+                              context='default')
 
         expected_ranges = [(1000, 1999),
                            (2000, 2999)]
@@ -188,8 +184,7 @@ class TestContext(unittest.TestCase):
         expected = True
 
         extension = Extension(exten='1450',
-                              context='default',
-                              type='user')
+                              context='default')
 
         expected_ranges = [(1400, 2000),
                            (1000, 1500)]
@@ -204,8 +199,7 @@ class TestContext(unittest.TestCase):
         expected = True
 
         extension = Extension(exten='1450',
-                              context='default',
-                              type='user')
+                              context='default')
 
         expected_ranges = [(1000, None)]
         context_ranges.return_value = expected_ranges
@@ -217,7 +211,6 @@ class TestContext(unittest.TestCase):
     @patch('xivo_dao.data_handler.context.dao.context_ranges')
     def test_is_extension_inside_range_when_extension_is_alphanumeric(self, context_ranges):
         extension = Extension(exten='ABC123',
-                              context='default',
-                              type='user')
+                              context='default')
 
         self.assertRaises(InvalidParametersError, context_services.is_extension_inside_range, extension)
