@@ -98,10 +98,22 @@ class TestAsteriskConfDAO(DAOTestCase):
     def setUp(self):
         self.empty_tables()
 
+    def test_get_group_settings_no_group(self):
+        self.assertRaises(LookupError, agid_conf_dao.get_group_settings, 666)
+
+    def test_get_group_settings_not_found(self):
+        group = self.add_group()
+        self.add_queue(name=group.name, category='queue')
+
+        self.assertRaises(LookupError, agid_conf_dao.get_group_settings, group.id)
+
+        group = self.add_group()
+
+        self.assertRaises(LookupError, agid_conf_dao.get_group_settings, group.id)
+
     def test_get_group_settings(self):
         group = self.add_group()
-        queue = self.add_queue(name=group.name,
-                               category='group')
+        queue = self.add_queue(name=group.name, category='group')
 
         expected_result = {
             'number': group.number,
