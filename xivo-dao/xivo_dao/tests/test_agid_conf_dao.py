@@ -16,14 +16,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 from hamcrest import *
+
 from xivo_dao import agid_conf_dao
+from xivo_dao.alchemy.agent_login_status import AgentLoginStatus
 from xivo_dao.alchemy.agentfeatures import AgentFeatures
 from xivo_dao.alchemy.agentqueueskill import AgentQueueSkill
 from xivo_dao.alchemy.context import Context
 from xivo_dao.alchemy.contextinclude import ContextInclude
-from xivo_dao.alchemy.ctipresences import CtiPresences
-from xivo_dao.alchemy.ctiphonehintsgroup import CtiPhoneHintsGroup
 from xivo_dao.alchemy.cti_profile import CtiProfile
+from xivo_dao.alchemy.ctiphonehintsgroup import CtiPhoneHintsGroup
+from xivo_dao.alchemy.ctipresences import CtiPresences
 from xivo_dao.alchemy.extension import Extension
 from xivo_dao.alchemy.features import Features
 from xivo_dao.alchemy.groupfeatures import GroupFeatures
@@ -59,6 +61,7 @@ from xivo_dao.tests.test_dao import DAOTestCase
 class TestAsteriskConfDAO(DAOTestCase):
 
     tables = [AgentFeatures,
+              AgentLoginStatus,
               AgentQueueSkill,
               Context,
               ContextInclude,
@@ -131,3 +134,16 @@ class TestAsteriskConfDAO(DAOTestCase):
         result = agid_conf_dao.get_group_settings(group.id)
 
         assert_that(result, has_entries(expected_result))
+
+    def test_get_agent_device_no_agent(self):
+        self.assertRaises(LookupError, agid_conf_dao.get_agent_device, 666)
+
+    def test_get_agent_device(self):
+        state_interface = 'toto'
+        agent_login_status = self.add_agent_login_status(state_interface=state_interface)
+
+        expected_result = state_interface
+
+        result = agid_conf_dao.get_agent_device(agent_login_status.agent_id)
+
+        assert_that(result, equal_to(expected_result))

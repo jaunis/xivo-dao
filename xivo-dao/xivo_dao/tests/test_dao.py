@@ -56,6 +56,7 @@ from xivo_dao.alchemy.queue import Queue
 from xivo_dao.alchemy.queueskillrule import QueueSkillRule
 from xivo_dao.alchemy.agentfeatures import AgentFeatures
 from xivo_dao.alchemy.queueskill import QueueSkill
+from xivo_dao.alchemy.agent_login_status import AgentLoginStatus
 
 logger = logging.getLogger(__name__)
 
@@ -210,6 +211,18 @@ class DAOTestCase(unittest.TestCase):
         agent = AgentFeatures(**kwargs)
         self.add_me(agent)
         return agent
+
+    def add_agent_login_status(self, **kwargs):
+        kwargs.setdefault('agent_id', self._generate_id())
+        kwargs.setdefault('agent_number', int(''.join(random.choice('123456789') for _ in range(6))))
+        kwargs.setdefault('extension', '%s' % random.randint(1000, 1999))
+        kwargs.setdefault('context', 'foocontext')
+        kwargs.setdefault('state_interface', '')
+        kwargs.setdefault('interface', '')
+
+        agent_login_status = AgentLoginStatus(**kwargs)
+        self.add_me(agent_login_status)
+        return agent_login_status
 
     def add_group(self, **kwargs):
         kwargs.setdefault('id', self._generate_id())

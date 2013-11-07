@@ -20,6 +20,7 @@ from xivo_dao.helpers.db_manager import daosession
 from xivo_dao.alchemy.groupfeatures import GroupFeatures
 from xivo_dao.alchemy.queue import Queue
 from sqlalchemy.sql.expression import and_
+from xivo_dao.alchemy.agent_login_status import AgentLoginStatus
 
 
 @daosession
@@ -41,6 +42,16 @@ def get_group_settings(session, group_id):
     res.update(group.todict())
     res['musicclass'] = musicclass
 
-    print res
-
     return res
+
+
+@daosession
+def get_agent_device(session, agent_id):
+    row = (session.query(AgentLoginStatus.state_interface)
+           .filter(and_(AgentLoginStatus.agent_id == agent_id))
+           .first())
+
+    if not row:
+        raise LookupError("'Unable to find agent (id: %s)" % (agent_id))
+
+    return row[0]
