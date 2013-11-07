@@ -21,6 +21,7 @@ from xivo_dao.alchemy.groupfeatures import GroupFeatures
 from xivo_dao.alchemy.queue import Queue
 from sqlalchemy.sql.expression import and_
 from xivo_dao.alchemy.agent_login_status import AgentLoginStatus
+from xivo_dao.alchemy.agentfeatures import AgentFeatures
 
 
 @daosession
@@ -48,10 +49,34 @@ def get_group_settings(session, group_id):
 @daosession
 def get_agent_device(session, agent_id):
     row = (session.query(AgentLoginStatus.state_interface)
-           .filter(and_(AgentLoginStatus.agent_id == agent_id))
+           .filter(AgentLoginStatus.agent_id == int(agent_id))
            .first())
 
     if not row:
         raise LookupError("'Unable to find agent (id: %s)" % (agent_id))
 
     return row[0]
+
+
+@daosession
+def get_agent(session, agent_id):
+    row = (session.query(AgentFeatures)
+           .filter(AgentFeatures.id == int(agent_id))
+           .first())
+
+    if not row:
+        raise LookupError("'Unable to find agent (id: %s)" % (agent_id))
+
+    return row.todict()
+
+
+@daosession
+def get_agent_with_number(session, agent_number):
+    row = (session.query(AgentFeatures)
+           .filter(AgentFeatures.number == str(agent_number))
+           .first())
+
+    if not row:
+        raise LookupError("'Unable to find agent (number: %s)" % (agent_number))
+
+    return row.todict()

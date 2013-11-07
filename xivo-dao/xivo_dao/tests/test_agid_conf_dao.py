@@ -147,3 +147,45 @@ class TestAsteriskConfDAO(DAOTestCase):
         result = agid_conf_dao.get_agent_device(agent_login_status.agent_id)
 
         assert_that(result, equal_to(expected_result))
+
+    def test_get_agent_no_agent(self):
+        self.assertRaises(LookupError, agid_conf_dao.get_agent, 666)
+
+    def test_get_agent(self):
+        agent = self.add_agent(firstname='toto',
+                               lastname='titi')
+
+        expected_result = {
+            'id': agent.id,
+            'number': agent.number,
+            'passwd': agent.passwd,
+            'firstname': agent.firstname,
+            'lastname': agent.lastname,
+            'language': agent.language,
+            'preprocess_subroutine': agent.preprocess_subroutine
+        }
+
+        result = agid_conf_dao.get_agent(agent.id)
+
+        assert_that(result, has_entries(expected_result))
+
+    def test_get_agent_with_number_no_agent(self):
+        self.assertRaises(LookupError, agid_conf_dao.get_agent_with_number, 666)
+
+    def test_get_agent_with_number(self):
+        agent = self.add_agent(firstname='toto',
+                               lastname='titi')
+
+        expected_result = {
+            'id': agent.id,
+            'number': agent.number,
+            'passwd': agent.passwd,
+            'firstname': agent.firstname,
+            'lastname': agent.lastname,
+            'language': agent.language,
+            'preprocess_subroutine': agent.preprocess_subroutine
+        }
+
+        result = agid_conf_dao.get_agent_with_number(agent.number)
+
+        assert_that(result, has_entries(expected_result))
