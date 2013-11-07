@@ -40,6 +40,14 @@ def disable_dnd(user_id):
     update(user_id, {'enablednd': 0})
 
 
+def enable_voicemail(user_id):
+    update(user_id, {'enablevoicemail': 1})
+
+
+def disable_voicemail(user_id):
+    update(user_id, {'enablevoicemail': 0})
+
+
 def enable_filter(user_id):
     update(user_id, {'incallfilter': 1})
 
@@ -78,6 +86,22 @@ def enable_recording(user_id):
 
 def disable_recording(user_id):
     update(user_id, {'callrecord': 0})
+
+
+def update_rna_fwd(user_id, enable):
+    update(user_id, {'enablerna': int(enable)})
+
+
+def update_busy_fwd(user_id, enable):
+    update(user_id, {'enablebusy': int(enable)})
+
+
+def update_unconditional_fwd(user_id, enable):
+    update(user_id, {'enableunc': int(enable)})
+
+
+def disable_forwards(user_id):
+    update(user_id, {'enablebusy': 0, 'enablerna': 0, 'enableunc': 0})
 
 
 @daosession

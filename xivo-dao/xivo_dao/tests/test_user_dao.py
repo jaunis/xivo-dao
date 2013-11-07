@@ -94,6 +94,20 @@ class TestUserFeaturesDAO(DAOTestCase):
 
         self._check_dnd_is_not_set(user_id)
 
+    def test_enable_voicemail(self):
+        user = self.add_user(enablevoicemail=0)
+
+        user_dao.enable_voicemail(user.id)
+
+        self._check_enablevoicemail_is_set(user.id)
+
+    def test_disable_voicemail(self):
+        user = self.add_user(enablevoicemail=1)
+
+        user_dao.disable_voicemail(user.id)
+
+        self._check_enablevoicemail_is_not_set(user.id)
+
     def add_user_dnd_set(self):
         user_features = UserFeatures()
         user_features.enablednd = 1
@@ -113,6 +127,16 @@ class TestUserFeaturesDAO(DAOTestCase):
 
         user_id = user_features.id
         return user_id
+
+    def _check_enablevoicemail_is_set(self, user_id):
+        user_features = (self.session.query(UserFeatures)
+                         .filter(UserFeatures.id == user_id))[0]
+        self.assertTrue(user_features.enablevoicemail)
+
+    def _check_enablevoicemail_is_not_set(self, user_id):
+        user_features = (self.session.query(UserFeatures)
+                         .filter(UserFeatures.id == user_id))[0]
+        self.assertFalse(user_features.enablevoicemail)
 
     def _check_dnd_is_set(self, user_id):
         user_features = (self.session.query(UserFeatures)
@@ -302,6 +326,50 @@ class TestUserFeaturesDAO(DAOTestCase):
 
         self._check_busy_fwd_in_db(user_id, 1)
         self._check_busy_dest_in_db(user_id, destination)
+
+    def test_update_rna_fwd(self):
+        user = self.add_user(enablerna=1)
+
+        user_dao.update_rna_fwd(user.id, 0)
+
+        self._check_rna_fwd_in_db(user.id, 0)
+
+        user_dao.update_rna_fwd(user.id, 1)
+
+        self._check_rna_fwd_in_db(user.id, 1)
+
+    def test_update_unconditional_fwd(self):
+        user = self.add_user(enableunc=1)
+
+        user_dao.update_unconditional_fwd(user.id, 0)
+
+        self._check_unconditional_fwd_in_db(user.id, 0)
+
+        user_dao.update_unconditional_fwd(user.id, 1)
+
+        self._check_unconditional_fwd_in_db(user.id, 1)
+
+    def test_update_busy_fwd(self):
+        user = self.add_user(enablebusy=1)
+
+        user_dao.update_busy_fwd(user.id, 0)
+
+        self._check_busy_fwd_in_db(user.id, 0)
+
+        user_dao.update_busy_fwd(user.id, 1)
+
+        self._check_busy_fwd_in_db(user.id, 1)
+
+    def test_disable_forwards(self):
+        user = self.add_user(enablebusy=1,
+                             enablerna=1,
+                             enableunc=1)
+
+        user_dao.disable_forwards(user.id)
+
+        self._check_unconditional_fwd_in_db(user.id, 0)
+        self._check_busy_fwd_in_db(user.id, 0)
+        self._check_rna_fwd_in_db(user.id, 0)
 
     def test_find_by_agent_id(self):
         agent_id = 5
