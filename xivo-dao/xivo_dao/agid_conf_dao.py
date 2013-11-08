@@ -22,6 +22,7 @@ from xivo_dao.alchemy.queue import Queue
 from sqlalchemy.sql.expression import and_
 from xivo_dao.alchemy.agent_login_status import AgentLoginStatus
 from xivo_dao.alchemy.agentfeatures import AgentFeatures
+from xivo_dao.alchemy.extension import Extension
 
 
 @daosession
@@ -80,3 +81,16 @@ def get_agent_with_number(session, agent_number):
         raise LookupError("'Unable to find agent (number: %s)" % (agent_number))
 
     return row.todict()
+
+
+@daosession
+def get_extensions_enabled_in(session, features):
+    rows = (session.query(Extension.typeval)
+            .filter(Extension.typeval.in_(features))
+            .filter(Extension.commented == 0)
+            .all())
+
+    if not rows:
+        raise LookupError("'Unable to find extensions in list (%s)" % ','.join(features))
+
+    return [row[0] for row in rows]

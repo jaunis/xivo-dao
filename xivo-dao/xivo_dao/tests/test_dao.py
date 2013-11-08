@@ -187,6 +187,7 @@ class DAOTestCase(unittest.TestCase):
         return user_line
 
     def add_extension(self, **kwargs):
+        kwargs.setdefault('exten', ''.join(random.choice('0123456789_*X.') for _ in range(6)))
         kwargs.setdefault('type', 'user')
         kwargs.setdefault('context', 'default')
         kwargs.setdefault('id', self._generate_id())

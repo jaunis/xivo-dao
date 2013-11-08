@@ -189,3 +189,24 @@ class TestAsteriskConfDAO(DAOTestCase):
         result = agid_conf_dao.get_agent_with_number(agent.number)
 
         assert_that(result, has_entries(expected_result))
+
+    def test_get_extensions_enabled_in(self):
+        features = [
+            u'enablevm',
+            u'enablevoicemail',
+            u'callrecord',
+            u'incallfilter',
+            u'enablednd'
+        ]
+
+        for feature in features:
+            self.add_extension(typeval=feature)
+
+        self.add_extension(typeval='toto',
+                           commented=1)
+
+        expected_result = features
+
+        result = agid_conf_dao.get_extensions_enabled_in(features)
+
+        assert_that(result, contains_inanyorder(*expected_result))
